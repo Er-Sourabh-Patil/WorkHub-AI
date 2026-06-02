@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - Attendance System</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .setup-wrapper {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .setup-header h1 {
+            font-size: 32px;
+            margin: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .setup-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .setup-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.95), rgba(139, 92, 246, 0.95));
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: slideUp 0.6s ease;
+        }
+
+        .setup-container h2 {
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            outline: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .input-group input:focus {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+        }
+
+        .warning {
+            background: rgba(255,200,124, 0.3);
+            border: 1px solid rgba(251, 146, 60, 0.5);
+            color: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .setup-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1f2937;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .setup-container button:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(251, 191, 36, 0.6);
+        }
+
+        .setup-container button:active {
+            transform: translateY(-1px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .setup-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="setup-wrapper">
+    <div class="setup-header" data-aos="fade-down">
+        <h1>ðŸ”” Admin Setup</h1>
+        <p>Initialize Your System Administrator Account</p>
+    </div>
+
+    <div class="setup-container" data-aos="zoom-in">
+
+        <h2>Initial Setup</h2>
+
+        <div class="warning">
+            Ã¢Å¡Â Ã¯Â¸ This is a one-time setup. Once you create the admin account, this page will be disabled for security reasons.
+        </div>
+
+        <form method="POST" action="/setup">
+
+            <div class="input-group">
+                <label>Admin ID</label>
+                <input type="text" name="admin_id" placeholder="Choose a unique admin ID" required minlength="3">
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter a strong password (min 6 chars)" required minlength="6">
+            </div>
+
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" placeholder="Re-enter your password" required minlength="6">
+            </div>
+
+            <button type="submit">ðŸš€â‚¬ Create Admin Account</button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out'
+    });
+</script>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Integration Settings - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .settings-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .settings-card h3 {
+            margin-top: 0;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .toggle-group label {
+            margin: 0;
+            flex: 1;
+        }
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #3b82f6;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        .btn-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        .btn-test {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-test:hover {
+            background: #7c3aed;
+        }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            color: #1e40af;
+            font-size: 14px;
+        }
+        .success-message {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+            color: #166534;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .error-message {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .feature-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-icon {
+            font-size: 24px;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <h1>📊§ Email Integration Settings</h1>
+            <a href="/admin_dashboard">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="successMsg" class="success-message">✅ Settings saved successfully!</div>
+        <div id="errorMsg" class="error-message"></div>
+
+        <!-- SMTP Configuration -->
+        <div class="settings-card">
+            <h3>📊§ SMTP Configuration</h3>
+            <div class="info-box">
+                <strong>â„¹ï¸ Info:</strong> Configure your email server settings to enable email notifications. 
+                You can use your company's SMTP server or services like Gmail, SendGrid, or AWS SES.
+            </div>
+
+            <form id="emailConfigForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="smtp_server">SMTP Server Address *</label>
+                        <input type="text" id="smtp_server" name="smtp_server" 
+                               placeholder="e.g., smtp.gmail.com" 
+                               value="{{ config.smtp_server if config else '' }}" required>
+                        <small style="color: #6b7280;">Example: smtp.gmail.com, smtp.office365.com</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="smtp_port">SMTP Port *</label>
+                        <input type="number" id="smtp_port" name="smtp_port" 
+                               placeholder="e.g., 587" 
+                               value="{{ config.smtp_port if config else '587' }}" required>
+                        <small style="color: #6b7280;">Common ports: 587 (TLS), 465 (SSL), 25 (SMTP)</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sender_email">Sender Email Address *</label>
+                        <input type="email" id="sender_email" name="sender_email" 
+                               placeholder="your-email@company.com" 
+                               value="{{ config.sender_email if config else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sender_password">Sender Password/App Password *</label>
+                        <input type="password" id="sender_password" name="sender_password" 
+                               placeholder="Enter password or app-specific password"
+                               value="{{ config.sender_password if config else '' }}" required>
+                        <small style="color: #6b7280;">For Gmail, use App Password (not regular password)</small>
+                    </div>
+                </div>
+
+                <div class="btn-section">
+                    <button type="button" class="btn btn-test" onclick="testEmailConnection()">🧪ª Test Connection</button>
+                    <button type="submit" class="btn btn-primary">💡¾ Save Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Email Features Configuration -->
+        <div class="settings-card">
+            <h3>📊¬ Email Features</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Enable or disable different types of email notifications:</p>
+
+            <form id="emailFeaturesForm">
+                <div class="toggle-group">
+                    <label>
+                        <strong>📊¢ Notification Emails</strong>
+                        <small style="display: block; color: #6b7280; margin-top: 3px;">Send real-time alerts for important events</small>
+                    </label>
+                    <label class="toggle">
+                        <input type="checkbox" name="enable_notifications" 
+                               {% if config and config.enable_notifications %}checked{% endif %} value="1">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <label>
+                        <strong>📊 Report Emails</strong>
+                        <small style="display: block; color: #6b7280; margin-top: 3px;">Send scheduled reports and summaries</small>
+                    </label>
+                    <label class="toggle">
+                        <input type="checkbox" name="enable_reports" 
+                               {% if config and config.enable_reports %}checked{% endif %} value="1">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <label>
+                        <strong>🗑️“ï¸ Leave Request Emails</strong>
+                        <small style="display: block; color: #6b7280; margin-top: 3px;">Notify about new leave requests and approvals</small>
+                    </label>
+                    <label class="toggle">
+                        <input type="checkbox" name="enable_leave_emails" 
+                               {% if config and config.enable_leave_emails %}checked{% endif %} value="1">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <label>
+                        <strong>💰 Payroll Emails</strong>
+                        <small style="display: block; color: #6b7280; margin-top: 3px;">Send payslips and salary confirmations</small>
+                    </label>
+                    <label class="toggle">
+                        <input type="checkbox" name="enable_payroll_emails" 
+                               {% if config and config.enable_payroll_emails %}checked{% endif %} value="1">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="btn-section">
+                    <button type="submit" class="btn btn-primary">💡¾ Save Preferences</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Email Templates -->
+        <div class="settings-card">
+            <h3>📊 Email Templates</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">The system will automatically send these types of emails:</p>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⏰</div>
+                    <div>
+                        <strong>Late Arrival Alert</strong>
+                        <small>Notify manager when employee marks late</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✅</div>
+                    <div>
+                        <strong>Leave Approval</strong>
+                        <small>Confirm leave request approval</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊ˆ</div>
+                    <div>
+                        <strong>Monthly Report</strong>
+                        <small>Send attendance summary</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💡³</div>
+                    <div>
+                        <strong>Payslip</strong>
+                        <small>Share salary information</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⭐</div>
+                    <div>
+                        <strong>Performance Review</strong>
+                        <small>Notify about completed review</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊Œ</div>
+                    <div>
+                        <strong>Task Reminder</strong>
+                        <small>Remind about pending tasks</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Information -->
+        <div class="settings-card">
+            <h3>🔔’ Security Information</h3>
+            <div class="info-box">
+                <strong>âš ï¸ Important:</strong> Your SMTP password is encrypted and stored securely. 
+                Never share these credentials. For Gmail, enable "Less secure app access" or use 
+                "App Passwords" for better security.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('emailConfigForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(document.getElementById('emailConfigForm'));
+            
+            try {
+                const response = await fetch('/save_email_config', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                const successMsg = document.getElementById('successMsg');
+                const errorMsg = document.getElementById('errorMsg');
+                
+                if (data.status === 'Success') {
+                    successMsg.textContent = '✅ Email settings saved successfully!';
+                    successMsg.style.display = 'block';
+                    errorMsg.style.display = 'none';
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 3000);
+                } else {
+                    errorMsg.textContent = 'âŒ Error: ' + data.message;
+                    errorMsg.style.display = 'block';
+                    successMsg.style.display = 'none';
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = 'âŒ Error: ' + error.message;
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        });
+
+        async function testEmailConnection() {
+            alert('Email connection test feature will be implemented soon. Please save your settings first.');
+        }
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

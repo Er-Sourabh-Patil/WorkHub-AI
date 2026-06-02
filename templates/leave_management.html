@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .leave-request {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid #3b82f6;
+        }
+        .leave-request.approved {
+            border-left-color: #22c55e;
+        }
+        .leave-request.rejected {
+            border-left-color: #ef4444;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <h1>🗑️“ï¸ Leave Management System</h1>
+            <a href="/admin_dashboard">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Request Leave Form -->
+        <div class="form-section">
+            <h3>Request Leave (Employee)</h3>
+            <form id="leaveForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="leave_type">Leave Type *</label>
+                        <select id="leave_type" name="leave_type" required>
+                            <option value="">Select Leave Type</option>
+                            <option value="Sick Leave">Sick Leave</option>
+                            <option value="Casual Leave">Casual Leave</option>
+                            <option value="Earned Leave">Earned Leave</option>
+                            <option value="Unpaid Leave">Unpaid Leave</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Start Date *</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="end_date">End Date *</label>
+                        <input type="date" id="end_date" name="end_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason</label>
+                    <textarea id="reason" name="reason" placeholder="Explain reason for leave..."></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('pending')">⏳ Pending Requests</button>
+            <button class="tab" onclick="switchTab('approved')">✅ Approved</button>
+            <button class="tab" onclick="switchTab('rejected')">âŒ Rejected</button>
+        </div>
+
+        <!-- Pending Requests -->
+        <div id="pending" class="tab-content active">
+            <h2>📁 Pending Leave Requests</h2>
+            {% set pending_requests = leave_requests|selectattr('status', 'equalto', 'Pending')|list %}
+            {% if pending_requests %}
+                {% for req in pending_requests %}
+                <div class="leave-request">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h3>{{ req.employee_name }}</h3>
+                            <p style="color: #6b7280; margin: 5px 0;">
+                                📅 {{ req.start_date }} to {{ req.end_date }} 
+                                ({{ ((req.end_date|string)|replace('-', ''))|int - ((req.start_date|string)|replace('-', ''))|int }}) days
+                            </p>
+                            <p style="color: #6b7280; margin: 5px 0;">Type: <strong>{{ req.leave_type }}</strong></p>
+                            {% if req.reason %}
+                            <p style="margin: 10px 0; padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                                <strong>Reason:</strong> {{ req.reason }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        <span class="status-badge status-pending">PENDING</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <form style="display: flex; gap: 10px;" method="POST" action="/approve_leave/{{ req.id }}">
+                            <button type="submit" class="btn btn-success">✅ Approve</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div style="padding: 20px; background: #eff6ff; border-radius: 8px; text-align: center;">
+                <p style="color: #6b7280;">No pending requests</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Approved Requests -->
+        <div id="approved" class="tab-content">
+            <h2>✅ Approved Leave Requests</h2>
+            {% set approved_requests = leave_requests|selectattr('status', 'equalto', 'Approved')|list %}
+            {% if approved_requests %}
+                {% for req in approved_requests %}
+                <div class="leave-request approved">
+                    <div>
+                        <h3>{{ req.employee_name }}</h3>
+                        <p style="color: #6b7280; margin: 5px 0;">
+                            📅 {{ req.start_date }} to {{ req.end_date }}
+                        </p>
+                        <p style="color: #6b7280; margin: 5px 0;">Type: <strong>{{ req.leave_type }}</strong></p>
+                        <p style="color: #16a34a; margin: 5px 0;">✅ Approved by: {{ req.approved_by }} on {{ req.approval_date }}</p>
+                    </div>
+                    <span class="status-badge status-approved">APPROVED</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div style="padding: 20px; background: #f0fdf4; border-radius: 8px; text-align: center;">
+                <p style="color: #6b7280;">No approved requests</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Rejected Requests -->
+        <div id="rejected" class="tab-content">
+            <h2>âŒ Rejected Leave Requests</h2>
+            {% set rejected_requests = leave_requests|selectattr('status', 'equalto', 'Rejected')|list %}
+            {% if rejected_requests %}
+                {% for req in rejected_requests %}
+                <div class="leave-request rejected">
+                    <div>
+                        <h3>{{ req.employee_name }}</h3>
+                        <p style="color: #6b7280; margin: 5px 0;">
+                            📅 {{ req.start_date }} to {{ req.end_date }}
+                        </p>
+                        <p style="color: #6b7280; margin: 5px 0;">Type: <strong>{{ req.leave_type }}</strong></p>
+                    </div>
+                    <span class="status-badge status-rejected">REJECTED</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div style="padding: 20px; background: #fef2f2; border-radius: 8px; text-align: center;">
+                <p style="color: #6b7280;">No rejected requests</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('leaveForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(document.getElementById('leaveForm'));
+            
+            try {
+                const response = await fetch('/request_leave', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'Success') {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

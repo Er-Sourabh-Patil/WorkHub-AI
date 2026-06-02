@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Reviews & Appraisals - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .review-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid #3b82f6;
+        }
+        .review-card.high-rating {
+            border-left-color: #22c55e;
+        }
+        .review-card.medium-rating {
+            border-left-color: #f59e0b;
+        }
+        .review-card.low-rating {
+            border-left-color: #ef4444;
+        }
+        .rating-stars {
+            font-size: 24px;
+            color: #fbbf24;
+            letter-spacing: 2px;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .form-section h3 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-submit {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-submit:hover {
+            background: #2563eb;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <h1>Ã¢⭐ Performance Reviews & Appraisals</h1>
+            <a href="/admin_dashboard">Ã¢â€  Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Add Review Form -->
+        <div class="form-section">
+            <h3>Add New Performance Review</h3>
+            <form id="reviewForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="employee_id">Employee *</label>
+                        <select id="employee_id" name="employee_id" required>
+                            <option value="">Select Employee</option>
+                            {% for emp in employees %}
+                            <option value="{{ emp.employee_id }}">{{ emp.name }} ({{ emp.employee_id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating (1-5 stars) *</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">Select Rating</option>
+                            <option value="1">Ã¢⭐ 1 - Poor</option>
+                            <option value="2">Ã¢⭐Ã¢⭐ 2 - Below Average</option>
+                            <option value="3">Ã¢⭐Ã¢⭐Ã¢⭐ 3 - Average</option>
+                            <option value="4">Ã¢⭐Ã¢⭐Ã¢⭐Ã¢⭐ 4 - Good</option>
+                            <option value="5">Ã¢⭐Ã¢⭐Ã¢⭐Ã¢⭐Ã¢⭐ 5 - Excellent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="review_type">Review Type *</label>
+                        <select id="review_type" name="review_type" required>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Quarterly">Quarterly</option>
+                            <option value="Annual">Annual</option>
+                            <option value="360-Degree">360-Degree Feedback</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="submit" class="btn-submit">Submit Review</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedback">Feedback & Comments</label>
+                    <textarea id="feedback" name="feedback" placeholder="Enter detailed feedback..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="goals">Goals & Objectives</label>
+                    <textarea id="goals" name="goals" placeholder="Set goals for next period..."></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Reviews List -->
+        <h2>ðŸ“Šâ€¹ All Performance Reviews</h2>
+        
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="review-card {% if review.rating >= 4 %}high-rating{% elif review.rating == 3 %}medium-rating{% else %}low-rating{% endif %}">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h3>{{ review.employee_name }}</h3>
+                        <p style="color: #6b7280; margin: 5px 0;">ID: {{ review.employee_id }} | Date: {{ review.review_date }}</p>
+                        <p style="color: #6b7280; margin: 5px 0;">Type: {{ review.review_type }} | Reviewer: {{ review.reviewer_id }}</p>
+                    </div>
+                    <div class="rating-stars">
+                        {% for i in range(review.rating) %}Ã¢⭐{% endfor %}
+                    </div>
+                </div>
+                
+                {% if review.feedback %}
+                <div style="margin: 10px 0; padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                    <strong>Feedback:</strong><br>{{ review.feedback }}
+                </div>
+                {% endif %}
+                
+                {% if review.goals %}
+                <div style="margin: 10px 0; padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                    <strong>Goals:</strong><br>{{ review.goals }}
+                </div>
+                {% endif %}
+                
+                <a href="/employee_reviews/{{ review.employee_id }}" style="color: #3b82f6; text-decoration: none; margin-top: 10px; display: inline-block;">
+                    View Full History Ã¢â€ â€™
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div style="padding: 20px; background: #eff6ff; border-radius: 8px; text-align: center;">
+            <p style="color: #6b7280;">No reviews added yet. Create one above!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(document.getElementById('reviewForm'));
+            
+            try {
+                const response = await fetch('/add_performance_review', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'Success') {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

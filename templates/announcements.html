@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7aa8da 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h1 {
+            color: #1e3c72;
+            font-size: 28px;
+            flex: 1;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .announcements-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .announcement-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .announcement-card.high-priority {
+            border-left-color: #ef4444;
+        }
+
+        .announcement-card.medium-priority {
+            border-left-color: #f59e0b;
+        }
+
+        .announcement-card.low-priority {
+            border-left-color: #10b981;
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .announcement-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3c72;
+            flex: 1;
+        }
+
+        .announcement-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-type-general {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-type-urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-type-update {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-type-holiday {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-priority-normal {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-priority-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .announcement-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .announcement-content {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .announcement-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
+
+        .read-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .read-status.unread {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .read-status.read {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .no-announcements {
+            background: white;
+            padding: 60px 30px;
+            border-radius: 12px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .no-announcements-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            margin: 30px auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #1e3c72;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            line-height: 1.8;
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header h1 {
+                width: 100%;
+            }
+
+            .announcement-card {
+                padding: 20px;
+            }
+
+            .announcement-title {
+                font-size: 18px;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>� Announcements</h1>
+        <div class="header-buttons">
+            {% if is_admin %}
+            <a href="/admin_dashboard" class="btn btn-back">← Back to Dashboard</a>
+            {% else %}
+            <a href="/employee_dashboard" class="btn btn-back">← Back to Dashboard</a>
+            {% endif %}
+            <a href="/logout" class="btn btn-logout">🚀 Logout</a>
+        </div>
+    </div>
+
+    {% if announcements %}
+        <div class="announcements-grid">
+            {% for announcement in announcements %}
+            <div class="announcement-card {% if announcement.priority == 'high' %}high-priority{% elif announcement.priority == 'normal' %}medium-priority{% else %}low-priority{% endif %}" onclick="openAnnouncementModal(this)">
+                <div class="announcement-header">
+                    <div class="announcement-title">{{ announcement.title }}</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="announcement-badge badge-type-{{ announcement.announcement_type }}">{{ announcement.announcement_type|upper }}</span>
+                        <span class="announcement-badge badge-priority-{{ announcement.priority }}">{{ announcement.priority|upper }}</span>
+                        {% if not announcement.is_read and not is_admin %}
+                        <span class="read-status unread">🔔 NEW</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="announcement-description">{{ announcement.description }}</div>
+                {% if announcement.content %}
+                <div class="announcement-content">{{ announcement.content }}</div>
+                {% endif %}
+                <div class="announcement-footer">
+                    <div>📅 {{ announcement.created_at }}</div>
+                    {% if announcement.expiry_date %}
+                    <div>⏰ Expires: {{ announcement.expiry_date }}</div>
+                    {% endif %}
+                    <div class="read-status {% if announcement.is_read %}read{% else %}unread{% endif %}">
+                        {% if announcement.is_read %}
+                        ✓ Read
+                        {% else %}
+                        Unread
+                        {% endif %}
+                    </div>
+                </div>
+                <input type="hidden" class="announcement-id" value="{{ announcement.announcement_id }}">
+                <input type="hidden" class="full-content" value="{{ announcement.content }}">
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-announcements">
+            <div class="no-announcements-icon">�</div>
+            <h3 style="color: #1e3c72; margin-bottom: 10px;">No Announcements</h3>
+            <p>There are no active announcements at the moment.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Announcement Detail Modal -->
+<div id="announcement-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title"></h2>
+            <button class="modal-close" onclick="closeAnnouncementModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <p id="modal-description" style="margin-bottom: 15px;"></p>
+            <div id="modal-content" style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px; line-height: 1.8;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <div>
+                    <p style="color: #6b7280; font-size: 12px; margin-bottom: 5px;">Posted Date</p>
+                    <p id="modal-date" style="color: #1e3c72; font-weight: 600;"></p>
+                </div>
+                <div>
+                    <p style="color: #6b7280; font-size: 12px; margin-bottom: 5px;">Expires</p>
+                    <p id="modal-expiry" style="color: #1e3c72; font-weight: 600;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAnnouncementModal(element) {
+    const title = element.querySelector('.announcement-title').textContent;
+    const description = element.querySelector('.announcement-description').textContent;
+    const content = element.querySelector('.full-content').value;
+    const date = element.querySelector('.announcement-footer').textContent.match(/📅 (.*?)⏰/);
+    const expiry = element.querySelector('.announcement-footer').textContent.match(/⏰ Expires: (.*?)(?:✓|Unread)/);
+    const announcementId = element.querySelector('.announcement-id').value;
+
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-description').textContent = description;
+    document.getElementById('modal-content').textContent = content || 'No additional content provided.';
+    document.getElementById('modal-date').textContent = date ? date[1].trim() : 'N/A';
+    document.getElementById('modal-expiry').textContent = expiry ? expiry[1].trim() : 'No expiry date';
+
+    // Mark as read if employee
+    if (!element.querySelector('.read-status').classList.contains('read')) {
+        markAsRead(announcementId);
+    }
+
+    document.getElementById('announcement-modal').style.display = 'flex';
+}
+
+function closeAnnouncementModal() {
+    document.getElementById('announcement-modal').style.display = 'none';
+}
+
+function markAsRead(announcementId) {
+    fetch('/api/mark_announcement_read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            announcement_id: announcementId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Marked as read:', data);
+        // Reload to update UI
+        setTimeout(() => location.reload(), 500);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+document.getElementById('announcement-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAnnouncementModal();
+    }
+});
+</script>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Performance - {{ employee['name'] }}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #00ffcc;
+    margin-bottom: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 10px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.back-btn {
+    background: #3b82f6;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+.download-btn {
+    background: #10b981;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.download-btn:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+    margin-bottom: 20px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    background: rgba(0,198,255,0.2);
+    border: 1px solid #00c6ff;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.metric h3 {
+    margin: 0 0 10px 0;
+    color: #00ffcc;
+    font-size: 14px;
+}
+
+.metric .value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00c6ff;
+}
+
+.metric .unit {
+    font-size: 12px;
+    color: #cbd5f5;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #84cc16);
+    transition: width 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th {
+    background: rgba(0,255,204,0.2);
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #00ffcc;
+    color: #00ffcc;
+}
+
+table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+table tr:hover {
+    background: rgba(0,255,255,0.1);
+}
+
+.status-present {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.status-absent {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 30px;
+    color: #cbd5f5;
+    font-style: italic;
+}
+
+.employee-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    background: rgba(0,198,255,0.1);
+    border-left: 3px solid #00c6ff;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.info-item label {
+    color: #00ffcc;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-item value {
+    color: #cbd5f5;
+    font-size: 16px;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+.card {
+    animation: fadeIn 0.5s ease;
+}
+
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>📊 Performance Report - {{ employee['name'] }}</h1>
+        <div class="header-buttons">
+            <button class="download-btn" onclick="downloadPerformance('{{ employee['employee_id'] }}')">📊¥ Download</button>
+            <a href="/admin_dashboard" class="back-btn">⬅️ Back</a>
+        </div>
+    </div>
+
+    <!-- EMPLOYEE INFO -->
+    <div class="card">
+        <h2>👤 Employee Information</h2>
+        <div class="employee-info">
+            <div class="info-item">
+                <label>Employee ID</label>
+                <value>{{ employee['employee_id'] }}</value>
+            </div>
+            <div class="info-item">
+                <label>Full Name</label>
+                <value>{{ employee['name'] }}</value>
+            </div>
+            <div class="info-item">
+                <label>Joining Date</label>
+                <value>{{ employee['joining_date'] }}</value>
+            </div>
+            <div class="info-item">
+                <label>Days in Program</label>
+                <value>{{ metrics['days_since_joining'] }} days</value>
+            </div>
+        </div>
+    </div>
+
+    <!-- PERFORMANCE METRICS -->
+    <div class="card">
+        <h2>📊ˆ Performance Metrics</h2>
+        <div class="metrics-grid">
+            <div class="metric">
+                <h3>Total Days</h3>
+                <div class="value">{{ metrics['total_days'] }}</div>
+                <div class="unit">marked</div>
+            </div>
+
+            <div class="metric">
+                <h3>Present Days</h3>
+                <div class="value" style="color: #22c55e;">{{ metrics['present_days'] }}</div>
+                <div class="unit">days</div>
+            </div>
+
+            <div class="metric">
+                <h3>Absent Days</h3>
+                <div class="value" style="color: #ef4444;">{{ metrics['absent_days'] }}</div>
+                <div class="unit">days</div>
+            </div>
+
+            <div class="metric">
+                <h3>Attendance Rate</h3>
+                <div class="value" style="color: #f59e0b;">{{ metrics['attendance_percentage'] }}%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ metrics['attendance_percentage'] }}%;">
+                        {{ metrics['attendance_percentage'] }}%
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric">
+                <h3>Work Submissions</h3>
+                <div class="value">{{ metrics['work_submissions'] }}</div>
+                <div class="unit">submitted</div>
+            </div>
+
+            <div class="metric">
+                <h3>Last Attendance</h3>
+                <div class="value" style="font-size: 18px;">{{ metrics['last_attendance'] }}</div>
+                <div class="unit">date</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE HISTORY -->
+    <div class="card">
+        <h2>📅 Attendance History with Work Done</h2>
+        
+        {% if attendance %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>📅 Date</th>
+                        <th>⏰ Time</th>
+                        <th>âœ”ï¸ Status</th>
+                        <th>📊 Works Done By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance %}
+                    <tr>
+                        <td>{{ record['date'] }}</td>
+                        <td>{{ record['time'] }}</td>
+                        <td>
+                            {% if record['status'] == 'Present' %}
+                                <span class="status-present">✅ Present</span>
+                            {% else %}
+                                <span class="status-absent">âŒ {{ record['status'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ record['work_description'][:80] }}{% if record['work_description']|length > 80 %}...{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-message">
+                No attendance records available yet.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- WORK UPDATES -->
+    <div class="card">
+        <h2>📊 Recent Work Updates (Last 30 Days)</h2>
+        
+        {% if work_updates %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>📅 Date</th>
+                        <th>📊 Work Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in work_updates %}
+                    <tr>
+                        <td>{{ update['date'] }}</td>
+                        <td>{{ update['work_description'][:100] }}{% if update['work_description']|length > 100 %}...{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-message">
+                No work updates submitted yet.
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function downloadPerformance(employeeId) {
+    const link = document.createElement('a');
+    link.href = `/download_employee_performance/${employeeId}`;
+    link.click();
+}
+</script>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

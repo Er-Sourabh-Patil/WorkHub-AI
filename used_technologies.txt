@@ -1,0 +1,199 @@
+================================================================================
+                         USED TECHNOLOGIES - AI ATTENDANCE SYSTEM
+================================================================================
+
+PROJECT OVERVIEW:
+This is a Face Recognition-based Attendance System that uses AI/ML to automatically
+mark attendance for interns through real-time face detection and recognition.
+
+================================================================================
+                              BACKEND TECHNOLOGIES
+================================================================================
+
+1. PYTHON (Core Programming Language)
+   - Version: 3.x
+   - Purpose: Main application development language
+
+2. FLASK 2.3.3
+   - Purpose: Web framework for building the REST API and web application
+   - Features: Routes, request handling, session management, templating
+
+3. WERKZEUG 2.3.7
+   - Purpose: WSGI utilities, password hashing (security)
+   - Features: Password hash generation and verification
+
+4. SQLITE3
+   - Purpose: Lightweight relational database for storing:
+     - Admin credentials
+     - Intern profiles
+     - Attendance records
+     - Face encodings
+
+================================================================================
+                        FACE RECOGNITION & AI/ML TECHNOLOGIES
+================================================================================
+
+1. DEEPFACE 0.0.79
+   - Purpose: Face recognition library for face encoding and comparison
+   - Features: Generates face embeddings, compares faces for authentication
+
+2. TENSORFLOW 2.10.1
+   - Purpose: Deep learning framework used by DeepFace for neural networks
+   - Features: Powers the face encoding and recognition models
+
+3. RETINAFACE (retina-face >= 0.0.12)
+   - Purpose: Advanced face detection model
+   - Features: Accurate face localization in images and video frames
+   - Fallback detector when primary detection fails
+
+4. OPENCV-PYTHON 4.8.1.78
+   - Purpose: Computer vision library for:
+     - Real-time video stream processing
+     - Face detection (Haar Cascades - primary)
+     - Face preprocessing and normalization
+     - Image cropping and resizing
+     - CLAHE (Contrast Limited Adaptive Histogram Equalization)
+
+5. NUMPY 1.23.5
+   - Purpose: Numerical computing for:
+     - Face encoding arrays manipulation
+     - Distance calculations between face embeddings
+     - Matrix operations in ML models
+
+================================================================================
+                          IMAGE PROCESSING TECHNOLOGIES
+================================================================================
+
+1. PILLOW (PIL) 10.0.0
+   - Purpose: Python Imaging Library for:
+     - Image loading and processing
+     - Face photo handling for interns
+     - Image format conversion
+
+2. OPENCV (Already listed above)
+   - Additional role: Image preprocessing and enhancement
+
+================================================================================
+                             FRONTEND TECHNOLOGIES
+================================================================================
+
+1. HTML5
+   - Purpose: Markup for all web pages
+   - Files: 8 templates (admin_login, admin_dashboard, intern_login, etc.)
+
+2. CSS3
+   - Purpose: Styling and layout
+   - File: static/css/style.css
+
+3. JAVASCRIPT (Vanilla)
+   - Purpose: Client-side interactivity and API calls
+   - Files:
+     * main.js - General utilities and page initialization
+     * camera.js - Video feed control and face recognition display
+     * dashboard.js - Dashboard interactions and data visualization
+
+4. HTTP/AJAX
+   - Purpose: Asynchronous communication with backend APIs
+   - Methods: Fetch API or XMLHttpRequest
+
+================================================================================
+                          DATA HANDLING & UTILITIES
+================================================================================
+
+1. REQUESTS 2.31.0
+   - Purpose: HTTP library for making requests (if needed for integrations)
+
+2. PANDAS 2.0.3
+   - Purpose: Data manipulation and analysis
+   - Usage: Processing attendance records and statistics
+
+3. H5PY 3.9.0
+   - Purpose: Reading/writing HDF5 file format
+   - Usage: Handling TensorFlow model files and weights
+
+4. PROTOBUF 3.19.6
+   - Purpose: Protocol Buffers for data serialization
+   - Usage: TensorFlow model serialization and compatibility
+
+================================================================================
+                              DEVELOPMENT TOOLS
+================================================================================
+
+1. WINDOWS OPERATING SYSTEM
+   - Platform for development and deployment
+   - PowerShell for script execution
+
+2. PYTHON VIRTUAL ENVIRONMENT (venv)
+   - Purpose: Isolated Python environment for dependency management
+   - Location: /venv directory
+
+3. GIT/VERSION CONTROL
+   - Implied by presence of multiple documentation files
+
+================================================================================
+                              PROJECT STRUCTURE
+================================================================================
+
+ROOT DIRECTORY:
+├── app.py                      # Flask main application
+├── camera_api.py               # Face recognition & video streaming
+├── face_utils.py               # Face detection and encoding utilities
+├── database.py                 # Database connection and utilities
+├── config.py                   # Configuration and constants
+├── init_db.py                  # Database schema initialization
+├── models.py                   # (Reserved for future model definitions)
+├── static/
+│   ├── css/style.css          # Styling
+│   ├── js/
+│   │   ├── main.js            # General utilities
+│   │   ├── camera.js          # Camera/video functionality
+│   │   └── dashboard.js       # Dashboard interactions
+│   └── uploads/               # Uploaded intern photos
+├── templates/                 # HTML templates
+│   ├── home.html
+│   ├── admin_login.html
+│   ├── admin_dashboard.html
+│   ├── intern_login.html
+│   ├── intern_dashboard.html
+│   ├── live_attendance.html
+│   └── setup.html
+├── captured_faces/            # Captured face images from camera
+├── requirements.txt           # Python dependency list
+└── database.db               # SQLite database file
+
+================================================================================
+                              KEY TECHNOLOGIES SUMMARY
+================================================================================
+
+LANGUAGE & FRAMEWORK:
+  • Python 3.x + Flask 2.3.3
+
+DATABASES:
+  • SQLite3
+
+FACE RECOGNITION STACK:
+  • DeepFace + TensorFlow 2.10.1
+  • RetinaFace (face detection)
+  • OpenCV 4.8.1.78 (video/image processing)
+  • Haar Cascades (real-time face detection)
+
+IMAGE PROCESSING:
+  • OpenCV, Pillow, NumPy
+
+FRONTEND:
+  • HTML5 + CSS3 + Vanilla JavaScript
+
+SECURITY:
+  • Werkzeug (password hashing)
+  • Session management (Flask)
+
+SUPPORTING LIBRARIES:
+  • NumPy (numerical computing)
+  • Pandas (data analysis)
+  • Requests (HTTP calls)
+  • H5PY, Protobuf (TensorFlow support)
+
+DEPLOYMENT:
+  • Windows OS with Python venv
+
+================================================================================

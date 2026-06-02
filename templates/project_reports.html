@@ -1,0 +1,670 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Reports & Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #00ffcc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: #00ffcc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .subtext {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.1);
+            position: relative;
+            height: 300px;
+        }
+
+        .projects-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .projects-table thead {
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .projects-table th {
+            padding: 15px;
+            text-align: left;
+            color: #00ffcc;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 255, 204, 0.3);
+        }
+
+        .projects-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .projects-table tbody tr:hover {
+            background: rgba(0, 255, 204, 0.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #00ffaa);
+            border-radius: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-completed {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-on-hold {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .priority-high {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .priority-medium {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: rgba(0, 255, 204, 0.3);
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .metric-value {
+            color: #00ffcc;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .projects-table {
+                font-size: 12px;
+            }
+
+            .projects-table th,
+            .projects-table td {
+                padding: 10px;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-chart-bar"></i> Project Reports & Analytics</h1>
+        <div class="header-buttons">
+            <a href="/admin_projects" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+            <a href="/admin_dashboard" class="btn btn-warning">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="/logout" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Key Metrics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Projects</h3>
+                <div class="value">{{ total_projects }}</div>
+                <div class="subtext">Active & Completed</div>
+            </div>
+            <div class="stat-card">
+                <h3>Team Members</h3>
+                <div class="value">{{ total_team_members }}</div>
+                <div class="subtext">Across all projects</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Hours Logged</h3>
+                <div class="value">{{ total_hours|int }}</div>
+                <div class="subtext">Work hours tracked</div>
+            </div>
+            <div class="stat-card">
+                <h3>Average Progress</h3>
+                <div class="value">{{ avg_progress }}%</div>
+                <div class="subtext">Overall completion</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="section">
+            <h2><i class="fas fa-chart-line"></i> Analytics & Visualizations</h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <canvas id="projectStatusChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hoursChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Project Reports -->
+        <div class="section">
+            <h2><i class="fas fa-table"></i> Detailed Project Reports</h2>
+            {% if projects %}
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>Project ID</th>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                        <th>Team Size</th>
+                        <th>Progress</th>
+                        <th>Hours Logged</th>
+                        <th>Updates</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td><strong>{{ project.project_id }}</strong></td>
+                        <td>{{ project.project_name }}</td>
+                        <td>
+                            <span class="status-badge {% if project.status == 'Active' %}status-active{% elif project.status == 'Completed' %}status-completed{% else %}status-on-hold{% endif %}">
+                                {{ project.status }}
+                            </span>
+                        </td>
+                        <td><strong>{{ project.team_size }}</strong></td>
+                        <td>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ project.avg_progress }}%;"></div>
+                                </div>
+                                <small style="color: #00ffcc;">{{ project.avg_progress }}%</small>
+                            </div>
+                        </td>
+                        <td>{{ project.total_hours|int }}h</td>
+                        <td>{{ project.total_updates }}</td>
+                        <td>
+                            <a href="/project_details/{{ project.project_id }}" class="btn" style="padding: 6px 12px; font-size: 12px; background: #0ea5e9;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No projects found. Create projects to see analytics!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Summary -->
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> Summary</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h3 style="color: #00ffcc; margin-bottom: 15px;">Project Distribution</h3>
+                    <div class="metric-item">
+                        <span class="metric-label">Active Projects</span>
+                        <span class="metric-value">{{ projects|selectattr('status', 'equalto', 'Active')|list|length }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Completed Projects</span>
+                        <span class="metric-value">{{ projects|selectattr('status', 'equalto', 'Completed')|list|length }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">On Hold Projects</span>
+                        <span class="metric-value">{{ projects|selectattr('status', 'equalto', 'On Hold')|list|length }}</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #00ffcc; margin-bottom: 15px;">Priority Breakdown</h3>
+                    <div class="metric-item">
+                        <span class="metric-label">High Priority</span>
+                        <span class="metric-value priority-high">{{ projects|selectattr('priority', 'equalto', 'High')|list|length }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Medium Priority</span>
+                        <span class="metric-value priority-medium">{{ projects|selectattr('priority', 'equalto', 'Medium')|list|length }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Low Priority</span>
+                        <span class="metric-value priority-low">{{ projects|selectattr('priority', 'equalto', 'Low')|list|length }}</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #00ffcc; margin-bottom: 15px;">Resource Utilization</h3>
+                    <div class="metric-item">
+                        <span class="metric-label">Avg Team Size</span>
+                        <span class="metric-value">{{ (total_team_members / total_projects)|round(1) if total_projects > 0 else 0 }}</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Avg Hours/Project</span>
+                        <span class="metric-value">{{ (total_hours / total_projects)|round(0)|int if total_projects > 0 else 0 }}h</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Overall Progress</span>
+                        <span class="metric-value">{{ avg_progress }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prepare chart data
+        const projects = {{ projects|tojson }};
+        
+        // Project Status Chart
+        const statuses = {};
+        projects.forEach(p => {
+            statuses[p.status] = (statuses[p.status] || 0) + 1;
+        });
+
+        new Chart(document.getElementById('projectStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(statuses),
+                datasets: [{
+                    data: Object.values(statuses),
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.6)',
+                        'rgba(59, 130, 246, 0.6)',
+                        'rgba(245, 158, 11, 0.6)',
+                        'rgba(239, 68, 68, 0.6)'
+                    ],
+                    borderColor: [
+                        '#10b981',
+                        '#3b82f6',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff', font: { family: "'Poppins', sans-serif" } }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Project Status Distribution',
+                        color: '#00ffcc'
+                    }
+                }
+            }
+        });
+
+        // Progress Chart
+        const progressData = projects.map(p => p.avg_progress);
+        const progressLabels = projects.map(p => p.project_id);
+
+        new Chart(document.getElementById('progressChart'), {
+            type: 'bar',
+            data: {
+                labels: progressLabels,
+                datasets: [{
+                    label: 'Progress %',
+                    data: progressData,
+                    backgroundColor: 'rgba(0, 255, 204, 0.6)',
+                    borderColor: '#00ffcc',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#fff', font: { family: "'Poppins', sans-serif" } } },
+                    title: { display: true, text: 'Project Progress Overview', color: '#00ffcc' }
+                },
+                scales: {
+                    x: { 
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        max: 100
+                    },
+                    y: { 
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+
+        // Hours Chart
+        const hoursData = projects.map(p => p.total_hours);
+
+        new Chart(document.getElementById('hoursChart'), {
+            type: 'line',
+            data: {
+                labels: progressLabels,
+                datasets: [{
+                    label: 'Hours Logged',
+                    data: hoursData,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 255, 204, 0.1)',
+                    borderColor: '#00ffcc',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointBackgroundColor: '#00ffcc',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#fff', font: { family: "'Poppins', sans-serif" } } },
+                    title: { display: true, text: 'Work Hours Tracked', color: '#00ffcc' }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: { 
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+
+        // Priority Chart
+        const priorities = {};
+        projects.forEach(p => {
+            priorities[p.priority] = (priorities[p.priority] || 0) + 1;
+        });
+
+        new Chart(document.getElementById('priorityChart'), {
+            type: 'radar',
+            data: {
+                labels: Object.keys(priorities).length > 0 ? Object.keys(priorities) : ['No Data'],
+                datasets: [{
+                    label: 'Projects',
+                    data: Object.values(priorities).length > 0 ? Object.values(priorities) : [0],
+                    borderColor: '#00ffcc',
+                    backgroundColor: 'rgba(0, 255, 204, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#00ffcc',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#fff', font: { family: "'Poppins', sans-serif" } } },
+                    title: { display: true, text: 'Priority Distribution', color: '#00ffcc' }
+                },
+                scales: {
+                    r: {
+                        ticks: { color: '#fff' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

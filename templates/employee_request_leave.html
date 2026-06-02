@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Leave - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .navbar {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .form-card h2 {
+            margin-top: 0;
+            color: #1f2937;
+            border-bottom: 2px solid #8b5cf6;
+            padding-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-submit {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-submit:hover {
+            background: #7c3aed;
+        }
+        .btn-submit:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .balance-card {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid #8b5cf6;
+        }
+        .balance-card h4 {
+            margin: 0 0 10px 0;
+            color: #1f2937;
+            font-size: 14px;
+        }
+        .balance-card .remaining {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b5cf6;
+        }
+        .balance-card .total {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: none;
+        }
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+            display: none;
+        }
+        .days-info {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading.active {
+            display: block;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="navbar">
+        <h1>ðŸ“Šâ€¹ Request New Leave</h1>
+        <a href="/employee_leave_history/{{ employee_id }}" style="color: white; text-decoration: none; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 4px; transition: 0.3s;">Ã¢â€  Back to History</a>
+    </div>
+
+    <div class="container">
+        <!-- Employee Info Card -->
+        {% if employee %}
+        <div class="form-card">
+            <h3 style="margin: 0; color: #8b5cf6;">ðŸ‘¤ {{ employee.name }}</h3>
+            <p style="color: #6b7280; margin: 5px 0 0 0;">ID: {{ employee.employee_id }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Leave Balance Summary -->
+        {% if leave_balances %}
+        <div class="form-card">
+            <h3 style="margin-top: 0; color: #1f2937;">ðŸ“ŠÅ  Available Leave Balance ({{ current_year }})</h3>
+            <div class="balance-grid">
+                {% for balance in leave_balances %}
+                <div class="balance-card">
+                    <h4>{{ balance.leave_type }}</h4>
+                    <div class="remaining">{{ balance.remaining_days }}</div>
+                    <div class="total">/ {{ balance.total_days }} days</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Request Form -->
+        <div class="form-card">
+            <h2>ðŸ“Š Leave Request Form</h2>
+            
+            <div id="alertError" class="alert alert-error"></div>
+            <div id="alertSuccess" class="alert alert-success"></div>
+            <div id="alertInfo" class="alert alert-info">
+                Ã¢Å“â€œ Fill in the form below to request leave. Your request will be submitted to the admin for approval.
+            </div>
+
+            <form id="leaveRequestForm">
+                <div class="form-group">
+                    <label for="leaveType">Leave Type <span style="color: red;">*</span></label>
+                    <select id="leaveType" name="leave_type" required>
+                        <option value="">-- Select Leave Type --</option>
+                        {% for leave_type in leave_types %}
+                        <option value="{{ leave_type.type_name }}">{{ leave_type.type_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date <span style="color: red;">*</span></label>
+                    <input type="date" id="startDate" name="start_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">End Date <span style="color: red;">*</span></label>
+                    <input type="date" id="endDate" name="end_date" required>
+                    <div id="daysInfo" class="days-info" style="display: none;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason (Optional)</label>
+                    <textarea id="reason" name="reason" placeholder="Enter reason for leave request..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-submit">Ã¢Å“â€¦ Submit Request</button>
+                    <a href="/employee_leave_history/{{ employee_id }}" class="btn btn-cancel" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Ã¢Å’ Cancel</a>
+                </div>
+
+                <div id="loading" class="loading">
+                    <p style="color: #6b7280;">Ã¢⏳ Processing your request...</p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Info Box -->
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; color: white; margin-bottom: 30px;">
+            <h3 style="margin-top: 0;">Ã¢â€žÂ¹Ã¯Â¸ Important Information</h3>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Leave requests must be submitted before the leave date</li>
+                <li>You cannot request leave for past dates</li>
+                <li>End date must be after or equal to start date</li>
+                <li>You can only request leave within your available balance</li>
+                <li>Admins will review and approve/reject your request</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('startDate').setAttribute('min', today);
+        document.getElementById('endDate').setAttribute('min', today);
+
+        // Calculate days when dates are selected
+        document.getElementById('startDate').addEventListener('change', updateDaysInfo);
+        document.getElementById('endDate').addEventListener('change', updateDaysInfo);
+
+        function updateDaysInfo() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const daysInfo = document.getElementById('daysInfo');
+
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+                if (days > 0) {
+                    daysInfo.textContent = `ðŸ“Šâ€¦ Total: ${days} day(s)`;
+                    daysInfo.style.display = 'block';
+                } else {
+                    daysInfo.style.display = 'none';
+                }
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('leaveRequestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(document.getElementById('leaveRequestForm'));
+            const submitBtn = document.querySelector('.btn-submit');
+            const loading = document.getElementById('loading');
+            const alertError = document.getElementById('alertError');
+            const alertSuccess = document.getElementById('alertSuccess');
+
+            // Validate inputs
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate || !document.getElementById('leaveType').value) {
+                alertError.textContent = 'Ã¢Å’ Please fill all required fields';
+                alertError.style.display = 'block';
+                return;
+            }
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            loading.classList.add('active');
+            alertError.style.display = 'none';
+            alertSuccess.style.display = 'none';
+
+            try {
+                const response = await fetch('/request_leave', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'Success') {
+                    alertSuccess.textContent = 'Ã¢Å“â€¦ ' + data.message;
+                    alertSuccess.style.display = 'block';
+                    document.getElementById('leaveRequestForm').reset();
+                    document.getElementById('daysInfo').style.display = 'none';
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/employee_leave_history/{{ employee_id }}';
+                    }, 2000);
+                } else {
+                    alertError.textContent = 'Ã¢Å’ ' + (data.message || 'Error submitting request');
+                    alertError.style.display = 'block';
+                }
+            } catch (error) {
+                alertError.textContent = 'Ã¢Å’ Error: ' + error.message;
+                alertError.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                loading.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

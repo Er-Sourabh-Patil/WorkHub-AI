@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Performance Reviews - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .navbar {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .review-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #3b82f6;
+        }
+        .review-card.high {
+            border-left-color: #22c55e;
+        }
+        .review-card.medium {
+            border-left-color: #f59e0b;
+        }
+        .review-card.low {
+            border-left-color: #ef4444;
+        }
+        .rating-display {
+            font-size: 28px;
+            color: #fbbf24;
+            letter-spacing: 3px;
+            margin: 15px 0;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        .review-info {
+            flex: 1;
+        }
+        .review-info h3 {
+            margin: 0 0 10px 0;
+            color: #1f2937;
+            font-size: 18px;
+        }
+        .review-meta {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .review-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 6px;
+        }
+        .review-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        .review-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        .avg-rating {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .avg-rating h2 {
+            margin: 0 0 10px 0;
+        }
+        .avg-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .avg-stars {
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .btn-back:hover {
+            background: #2563eb;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Ã¢⭐ My Performance Reviews</h1>
+        <a href="/employee_dashboard" class="btn-back">Ã¢â€  Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <!-- Average Rating Card -->
+        {% if reviews %}
+        <div class="avg-rating">
+            <h2>Average Rating</h2>
+            <div class="avg-value">{{ avg_rating }}/5.0</div>
+            <div class="avg-stars">
+                {% for i in range(avg_rating|int) %}Ã¢⭐{% endfor %}
+                {% if avg_rating % 1 != 0 %}Ã¢Å“Â¨{% endif %}
+            </div>
+            <p style="margin: 15px 0 0 0;">Based on {{ reviews|length }} review(s)</p>
+        </div>
+
+        <!-- Reviews Timeline -->
+        <h2 style="text-align: center; margin-bottom: 30px;">ðŸ“Šâ€¹ Review History</h2>
+        
+        {% for review in reviews %}
+        <div class="review-card {% if review.rating >= 4 %}high{% elif review.rating == 3 %}medium{% else %}low{% endif %}">
+            <div class="review-header">
+                <div class="review-info">
+                    <h3>{{ review.review_type }} Review</h3>
+                    <div class="review-meta">
+                        ðŸ“Šâ€¦ {{ review.review_date }}<br>
+                        ðŸ‘¤ Reviewer: {{ review.reviewer_id }}<br>
+                        ðŸ“ŠÅ  Status: {{ review.status }}
+                    </div>
+                </div>
+                <div class="rating-display">
+                    {% for i in range(review.rating) %}Ã¢⭐{% endfor %}
+                </div>
+            </div>
+
+            {% if review.feedback %}
+            <div class="review-section">
+                <div class="review-label">ðŸ’¡Â¬ Feedback & Comments</div>
+                <div class="review-content">{{ review.feedback }}</div>
+            </div>
+            {% endif %}
+
+            {% if review.goals %}
+            <div class="review-section">
+                <div class="review-label">ðŸŽ¨Â¯ Goals & Objectives</div>
+                <div class="review-content">{{ review.goals }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">ðŸ“Š⭐</div>
+            <h2>No Reviews Yet</h2>
+            <p style="color: #6b7280;">Your performance reviews will appear here once your manager has completed them.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

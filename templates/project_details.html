@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #00ffcc;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .project-header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .project-header h2 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .project-header p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .project-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .meta-item {
+            background: rgba(0, 255, 204, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #00ffcc;
+        }
+
+        .meta-item label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .meta-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00ffcc;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 255, 204, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            text-align: center;
+        }
+
+        .stat-box .label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .stat-box .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ffcc;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .team-member {
+            background: rgba(0, 255, 204, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .team-member h4 {
+            color: #00ffcc;
+            margin-bottom: 8px;
+        }
+
+        .team-member p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            margin-top: 10px;
+        }
+
+        .updates-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .updates-table thead {
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .updates-table th {
+            padding: 15px;
+            text-align: left;
+            color: #00ffcc;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 255, 204, 0.3);
+        }
+
+        .updates-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .updates-table tbody tr:hover {
+            background: rgba(0, 255, 204, 0.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #00ffaa);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-in-progress {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-blocked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: rgba(0, 255, 204, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .project-header h2 {
+                font-size: 24px;
+            }
+
+            .project-meta {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-project-diagram"></i> Project Details</h1>
+        <a href="/admin_projects" class="btn btn-warning">
+            <i class="fas fa-arrow-left"></i> Back to Projects
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Project Overview -->
+        <div class="project-header">
+            <h2>{{ project.project_name }}</h2>
+            <p>{{ project.description }}</p>
+            
+            <div class="project-meta">
+                <div class="meta-item">
+                    <label>Project ID</label>
+                    <div class="value">{{ project.project_id }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Status</label>
+                    <div class="value" style="text-transform: uppercase;">{{ project.status }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Priority</label>
+                    <div class="value">{{ project.priority }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Start Date</label>
+                    <div class="value">{{ project.start_date }}</div>
+                </div>
+                {% if project.end_date %}
+                <div class="meta-item">
+                    <label>End Date</label>
+                    <div class="value">{{ project.end_date }}</div>
+                </div>
+                {% endif %}
+                <div class="meta-item">
+                    <label>Budget</label>
+                    <div class="value">${{ project.budget }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Statistics -->
+        <div class="section">
+            <h3><i class="fas fa-chart-pie"></i> Project Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="label">Team Size</div>
+                    <div class="value">{{ team_size }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Total Hours</div>
+                    <div class="value">{{ total_hours|int }}h</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Progress</div>
+                    <div class="value">{{ avg_progress }}%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Updates</div>
+                    <div class="value">{{ total_updates }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Members -->
+        <div class="section">
+            <h3><i class="fas fa-users"></i> Team Members ({{ assignments|length }})</h3>
+            {% if assignments %}
+            <div class="team-grid">
+                {% for assignment in assignments %}
+                <div class="team-member">
+                    <h4>{{ assignment.name }}</h4>
+                    <p><strong>ID:</strong> {{ assignment.employee_id }}</p>
+                    <p><strong>Role:</strong> {{ assignment.role }}</p>
+                    <p><strong>Assigned:</strong> {{ assignment.assignment_date }}</p>
+                    <span class="badge">{{ assignment.status }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>No team members assigned yet</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Project Updates & Progress -->
+        <div class="section">
+            <h3><i class="fas fa-history"></i> Progress Updates ({{ updates|length }})</h3>
+            {% if updates %}
+            <table class="updates-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Progress</th>
+                        <th>Hours</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in updates %}
+                    <tr>
+                        <td><strong>{{ update.name }}</strong></td>
+                        <td>{{ update.update_date }}</td>
+                        <td>
+                            <div style="min-width: 100px;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ update.progress_percentage }}%;"></div>
+                                </div>
+                                <small style="color: #00ffcc;">{{ update.progress_percentage }}%</small>
+                            </div>
+                        </td>
+                        <td>{{ update.hours_worked }}h</td>
+                        <td>
+                            <span class="status-badge {% if update.status == 'In Progress' %}status-in-progress{% elif update.status == 'Completed' %}status-completed{% elif update.status == 'Blocked' %}status-blocked{% endif %}">
+                                {{ update.status }}
+                            </span>
+                        </td>
+                        <td style="max-width: 300px; word-break: break-word;">
+                            <small>{{ update.description[:50] }}{% if update.description|length > 50 %}...{% endif %}</small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No progress updates submitted yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

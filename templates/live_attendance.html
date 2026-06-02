@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ðŸ“ŠÂ¸ Live Attendance - Face Recognition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #00ffcc;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .camera-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            animation: slideIn 0.8s ease;
+        }
+
+        .camera-feed {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #000;
+            aspect-ratio: 16/9;
+        }
+
+        .camera-info {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            text-align: center;
+            font-size: 0.9em;
+            color: #00ffcc;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ffcc;
+        }
+
+        .marked-list {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .marked-list h3 {
+            margin-bottom: 15px;
+            color: #00ffcc;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .marked-item {
+            padding: 12px;
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 3px solid #22c55e;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            animation: slideInRight 0.5s ease;
+        }
+
+        .marked-item-id {
+            font-weight: bold;
+            color: #22c55e;
+        }
+
+        .marked-item-time {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .no-marked {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .info-card h4 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-card p {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: #00c6ff;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #00ffcc;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 255, 0.5);
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ðŸ“ŠÂ¸ Live Face Recognition Attendance</h1>
+            <p>Real-time automatic attendance marking at 60%+ face similarity</p>
+        </div>
+
+        <!-- Main Grid: Camera + Sidebar -->
+        <div class="main-grid">
+            <!-- Camera Feed -->
+            <div class="camera-container">
+                <img id="cameraFeed" class="camera-feed" src="/video_feed" alt="Live Camera Feed">
+                <div class="camera-info">
+                    Ã¢Å“â€¦ Live Stream Active | ðŸ“Š Auto-Marking Enabled
+                </div>
+            </div>
+
+            <!-- Sidebar: Stats + Marked List -->
+            <div class="sidebar">
+                <!-- Stats Card -->
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-label">ðŸ“ŠÅ  Total Employees</div>
+                        <div class="stat-value" id="totalEmployees">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Ã¢Å“â€¦ Marked Today</div>
+                        <div class="stat-value" id="markedToday">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Ã¢⏳ Pending</div>
+                        <div class="stat-value" id="pending">0</div>
+                    </div>
+                </div>
+
+                <!-- Marked List -->
+                <div class="marked-list">
+                    <h3>Ã¢Å“â€¦ Marked Today</h3>
+                    <div id="markedListContainer">
+                        <p class="no-marked">No one marked yet...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Info Cards -->
+        <div class="bottom-grid">
+            <div class="info-card">
+                <h4>ðŸŽ¨Â¯ How It Works</h4>
+                <p>
+                    The system captures faces in real-time, compares them with registered employee photos using AI, and automatically marks attendance when similarity reaches 60% or higher.
+                </p>
+            </div>
+            <div class="info-card">
+                <h4>Ã¢Å¡â„¢Ã¯Â¸ Threshold Settings</h4>
+                <p>
+                    <strong>Similarity Threshold:</strong> 60%<br>
+                    <strong>Detection Frames:</strong> 5 consecutive matches<br>
+                    <strong>Model:</strong> ArcFace (128-dimensional)<br>
+                    <strong>Detection:</strong> Haar Cascade
+                </p>
+            </div>
+            <div class="info-card">
+                <h4>ðŸ’¡Â¡ Tips</h4>
+                <p>
+                    Ensure good lighting for better recognition. Position your face clearly within the camera frame. The system automatically prevents duplicate marking for the same person.
+                </p>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn-primary" onclick="refreshStats()">ðŸ””â€ž Refresh Stats</button>
+            <button class="btn-secondary" onclick="goBack()">Ã¢â€  Back to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        // Refresh marked list and stats periodically
+        setInterval(updateMarkedList, 2000);
+        setInterval(updateStats, 3000);
+
+        // Initial load
+        updateMarkedList();
+        updateStats();
+
+        async function updateMarkedList() {
+            try {
+                const response = await fetch('/api/marked_today');
+                const data = await response.json();
+
+                if (data.status === 'Success') {
+                    const container = document.getElementById('markedListContainer');
+                    const items = data.data;
+
+                    if (items.length === 0) {
+                        container.innerHTML = '<p class="no-marked">No one marked yet...</p>';
+                    } else {
+                        container.innerHTML = items.map(item => `
+                            <div class="marked-item">
+                                <div class="marked-item-id">ðŸ‘¤ ${item.employee_id}</div>
+                                <div class="marked-item-time">Ã¢⏰ ${item.time}</div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating marked list:', error);
+            }
+        }
+
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/camera_stats');
+                const data = await response.json();
+
+                if (data.status === 'Success') {
+                    document.getElementById('totalEmployees').textContent = data.total_employees;
+                    document.getElementById('markedToday').textContent = data.marked_today;
+                    document.getElementById('pending').textContent = data.pending;
+                }
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        function refreshStats() {
+            updateMarkedList();
+            updateStats();
+            alert('Ã¢Å“â€¦ Stats refreshed!');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Keep camera feed alive
+        window.addEventListener('beforeunload', () => {
+            console.log('Closing camera feed...');
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

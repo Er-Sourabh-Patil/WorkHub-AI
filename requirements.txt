@@ -1,0 +1,24 @@
+# ================= CORE =================
+flask==2.3.3
+werkzeug==2.3.7
+
+# ================= AI / ML =================
+deepface==0.0.79
+tensorflow==2.10.1
+numpy==1.23.5
+retina-face>=0.0.12
+
+# ================= IMAGE PROCESSING =================
+opencv-python==4.8.1.78
+Pillow==10.0.0
+
+# ================= UTILITIES =================
+requests==2.31.0
+pandas==2.0.3
+scipy>=1.7.0  # For cosine similarity calculations
+google-generativeai==0.3.0  # For AI chatbot
+python-dotenv==1.0.0  # For loading .env files
+
+# ================= OPTIONAL (for stability) =================
+h5py==3.9.0
+protobuf==3.19.6

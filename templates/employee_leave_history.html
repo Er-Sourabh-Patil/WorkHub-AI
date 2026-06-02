@@ -1,0 +1,347 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Leave History - Attendance System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .navbar {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .leave-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid #8b5cf6;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+        .leave-card.approved {
+            border-left-color: #22c55e;
+        }
+        .leave-card.rejected {
+            border-left-color: #ef4444;
+        }
+        .leave-card.pending {
+            border-left-color: #f59e0b;
+        }
+        .leave-info {
+            flex: 1;
+        }
+        .leave-info h3 {
+            margin: 0 0 10px 0;
+            color: #1f2937;
+        }
+        .leave-dates {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .leave-type {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .balance-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .balance-card h4 {
+            margin: 0 0 15px 0;
+            color: #1f2937;
+        }
+        .balance-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+        .balance-stat {
+            text-align: center;
+        }
+        .balance-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .balance-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .btn-back:hover {
+            background: #2563eb;
+        }
+        .btn-request {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #22c55e;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .btn-request:hover {
+            background: #16a34a;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>📋 My Leave History</h1>
+        <a href="/employee_dashboard" class="btn-back">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <!-- Leave Balance Cards -->
+        {% if leave_balances %}
+        <h2>📊 Leave Balance (Current Year)</h2>
+        <div class="balance-grid">
+            {% for balance in leave_balances %}
+            <div class="balance-card">
+                <h4>{{ balance.leave_type }}</h4>
+                <div class="balance-stats">
+                    <div class="balance-stat">
+                        <div class="balance-value">{{ balance.remaining_days }}</div>
+                        <div class="balance-label">Remaining</div>
+                    </div>
+                    <div class="balance-stat">
+                        <div class="balance-value" style="color: #f59e0b;">{{ balance.used_days }}</div>
+                        <div class="balance-label">Used</div>
+                    </div>
+                    <div class="balance-stat">
+                        <div class="balance-value" style="color: #6b7280;">{{ balance.total_days }}</div>
+                        <div class="balance-label">Total</div>
+                    </div>
+                </div>
+                <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 15px; overflow: hidden;">
+                    <div style="width: {{ (balance.used_days / balance.total_days * 100)|int }}%; height: 100%; background: #f59e0b; border-radius: 3px;"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Request New Leave -->
+        <a href="/employee_request_leave" class="btn-request">+ Request New Leave</a>
+
+        <!-- Tabs for Leave Requests -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('all')">� All Requests</button>
+            <button class="tab" onclick="switchTab('pending')">⏳ Pending</button>
+            <button class="tab" onclick="switchTab('approved')">✅ Approved</button>
+        </div>
+
+        <!-- All Requests -->
+        <div id="all" class="tab-content active">
+            <h2>� All Leave Requests</h2>
+            {% if leave_requests %}
+                {% for req in leave_requests %}
+                <div class="leave-card {% if req.status == 'Approved' %}approved{% elif req.status == 'Rejected' %}rejected{% else %}pending{% endif %}">
+                    <div class="leave-info">
+                        <h3>{{ req.leave_type }}</h3>
+                        <div class="leave-dates">
+                            � {{ req.start_date }} to {{ req.end_date }}
+                        </div>
+                        <div class="leave-type">
+                            {% if req.reason %}
+                            Reason: {{ req.reason }}
+                            {% else %}
+                            No reason provided
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-badge {% if req.status == 'Pending' %}status-pending{% elif req.status == 'Approved' %}status-approved{% else %}status-rejected{% endif %}">
+                            {{ req.status|upper }}
+                        </span>
+                        {% if req.status == 'Approved' and req.approval_date %}
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">
+                            ✅ Approved on {{ req.approval_date }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <p style="color: #6b7280;">No leave requests found. <a href="/employee_request_leave" style="color: #3b82f6;">Click here to request leave.</a></p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Pending Requests -->
+        <div id="pending" class="tab-content">
+            <h2>⏳ Pending Leave Requests</h2>
+            {% set pending = leave_requests|selectattr('status', 'equalto', 'Pending')|list %}
+            {% if pending %}
+                {% for req in pending %}
+                <div class="leave-card pending">
+                    <div class="leave-info">
+                        <h3>{{ req.leave_type }}</h3>
+                        <div class="leave-dates">📅 {{ req.start_date }} to {{ req.end_date }}</div>
+                        <div class="leave-type">{{ req.reason or 'No reason provided' }}</div>
+                    </div>
+                    <span class="status-badge status-pending">PENDING</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <p style="color: #6b7280;">No pending requests</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Approved Requests -->
+        <div id="approved" class="tab-content">
+            <h2>✅ Approved Leave Requests</h2>
+            {% set approved = leave_requests|selectattr('status', 'equalto', 'Approved')|list %}
+            {% if approved %}
+                {% for req in approved %}
+                <div class="leave-card approved">
+                    <div class="leave-info">
+                        <h3>{{ req.leave_type }}</h3>
+                        <div class="leave-dates">� {{ req.start_date }} to {{ req.end_date }}</div>
+                        <div style="font-size: 12px; color: #16a34a; margin-top: 8px;">
+                            ✅ Approved on {{ req.approval_date }}
+                        </div>
+                    </div>
+                    <span class="status-badge status-approved">APPROVED</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <p style="color: #6b7280;">No approved requests</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

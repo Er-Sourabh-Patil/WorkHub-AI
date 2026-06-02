@@ -1,0 +1,930 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Employee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #f5576c 0%, #833ab4 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-buttons a, .header-buttons button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .header-buttons a:hover, .header-buttons button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Groups Sidebar */
+        .groups-panel {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .groups-header {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .groups-header h2 {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .new-group-btn {
+            background: #f5576c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .new-group-btn:hover {
+            background: #833ab4;
+        }
+
+        .search-box {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .groups-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .group-item {
+            padding: 12px;
+            margin: 5px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .group-item:hover {
+            background: #f0f0f0;
+        }
+
+        .group-item.active {
+            background: #f5576c;
+            color: white;
+            border-color: #f5576c;
+        }
+
+        .group-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .group-preview {
+            font-size: 12px;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .group-item.active .unread-badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-left h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .chat-header-left p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .members-button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .members-button:hover {
+            background: #833ab4;
+        }
+
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 10px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 12px;
+            color: #f5576c;
+            padding: 0 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .message-content {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-bubble {
+            
+            padding: 10px 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message-own {
+            align-self: flex-end;
+        }
+
+        .message-own .message-bubble {
+            background: #f5576c;
+            color: white;
+            border-bottom-right-radius: 3px;
+        }
+
+        .message-other {
+            align-self: flex-start;
+        }
+
+        .message-other .message-bubble {
+            background: #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 3px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            padding: 0 15px;
+            text-align: right;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-input-wrapper textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            max-height: 100px;
+            min-height: 40px;
+        }
+
+        .message-input-wrapper textarea:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 5px rgba(245, 87, 108, 0.3);
+        }
+
+        .send-button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+            white-space: nowrap;
+            height: 40px;
+        }
+
+        .send-button:hover:not(:disabled) {
+            background: #833ab4;
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Members Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .member-item {
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .member-type {
+            font-size: 12px;
+            background: #f5576c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .groups-panel {
+                width: 100%;
+                max-height: 200px;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                overflow-x: auto;
+            }
+
+            .groups-list {
+                display: flex;
+                gap: 10px;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px;
+            }
+
+            .group-item {
+                min-width: 150px;
+                margin: 0;
+            }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .new-group-btn {
+                display: none;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .groups-list::-webkit-scrollbar,
+        .messages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .groups-list::-webkit-scrollbar-track,
+        .messages-area::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .groups-list::-webkit-scrollbar-thumb,
+        .messages-area::-webkit-scrollbar-thumb {
+            background: #f5576c;
+            border-radius: 4px;
+        }
+
+        .groups-list::-webkit-scrollbar-thumb:hover,
+        .messages-area::-webkit-scrollbar-thumb:hover {
+            background: #833ab4;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>ðŸ’¡Â¬ Messages</h1>
+        <div class="header-buttons">
+            <a href="/employee_dashboard">Ã¢Â¬â€¦ Back to Dashboard</a>
+            <a href="/logout">ðŸš€Âª Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Groups Sidebar -->
+        <div class="groups-panel">
+            <div class="groups-header">
+                <h2>Groups</h2>
+                <button class="new-group-btn" onclick="openNewGroupModal()">+</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchBox" placeholder="Search groups..." onkeyup="filterGroups()">
+            </div>
+            <div class="groups-list" id="groupsList">
+                <div class="empty-state">
+                    <p>Loading groups...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <h2 id="chatTitle">Select a group</h2>
+                    <p id="chatMembers">No group selected</p>
+                </div>
+                <button class="members-button" id="membersBtn" onclick="openMembersModal()" style="display: none;">
+                    ðŸ‘¤Â¥ Members
+                </button>
+            </div>
+
+            <div class="messages-area" id="messagesArea">
+                <div class="empty-state">
+                    <div class="empty-state-icon">ðŸ’¡Â¬</div>
+                    <p>Select a group to start messaging</p>
+                </div>
+            </div>
+
+            <div class="input-area" id="inputArea" style="display: none;">
+                <div class="message-input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Type your message here..." 
+                        onkeypress="handleKeyPress(event)"
+                        maxlength="5000"
+                    ></textarea>
+                </div>
+                <button class="send-button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Members Modal -->
+    <div class="modal" id="membersModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Group Members</h2>
+                <button class="modal-close" onclick="closeMembersModal()">Ã¢Å“â€¢</button>
+            </div>
+            <div class="members-list" id="membersList"></div>
+        </div>
+    </div>
+
+    <!-- New Group Modal -->
+    <div class="modal" id="newGroupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Group</h2>
+                <button class="modal-close" onclick="closeNewGroupModal()">Ã¢Å“â€¢</button>
+            </div>
+            <input type="text" id="newGroupName" placeholder="Group name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+            <textarea id="newGroupDescription" placeholder="Group description (optional)" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; height: 80px; margin-bottom: 10px;"></textarea>
+            <button onclick="createNewGroup()" style="width: 100%; padding: 10px; background: #f5576c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Create Group</button>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage"></div>
+
+    <script>
+        const currentGroupId = null;
+        let currentUser = {};
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Load groups on page load
+        window.addEventListener('load', function() {
+            loadGroups();
+        });
+
+        // Load groups list
+        async function loadGroups() {
+            try {
+                const response = await fetch('/api/get_groups');
+                const data = await response.json();
+
+                if (data.success && data.groups) {
+                    const groupsList = document.getElementById('groupsList');
+                    
+                    if (data.groups.length === 0) {
+                        groupsList.innerHTML = '<div class="empty-state"><p>No groups yet</p></div>';
+                        return;
+                    }
+
+                    groupsList.innerHTML = data.groups.map(group => `
+                        <div class="group-item" data-group-id="${escapeHtml(group.group_id)}" onclick="selectGroup('${escapeHtml(group.group_id)}', '${escapeHtml(group.group_name)}')">
+                            <div class="group-name">${escapeHtml(group.group_name)}</div>
+                            ${group.last_message ? `<div class="group-preview">${escapeHtml(group.last_message.substring(0, 50))}</div>` : '<div class="group-preview">No messages yet</div>'}
+                            ${group.unread_count > 0 ? `<div class="unread-badge">${group.unread_count}</div>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading groups:', error);
+                document.getElementById('groupsList').innerHTML = '<div class="empty-state"><p>Error loading groups</p></div>';
+            }
+        }
+
+        // Select a group
+        async function selectGroup(groupId, groupName) {
+            // Update active state
+            document.querySelectorAll('.group-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-group-id="${groupId}"]`).classList.add('active');
+
+            // Update chat header
+            document.getElementById('chatTitle').textContent = escapeHtml(groupName);
+            document.getElementById('inputArea').style.display = 'flex';
+            document.getElementById('membersBtn').style.display = 'block';
+
+            // Load messages
+            await loadMessages(groupId);
+            
+            // Load members
+            await loadMembers(groupId);
+
+            // Clear input
+            document.getElementById('messageInput').value = '';
+            document.getElementById('messageInput').focus();
+        }
+
+        // Load messages for a group
+        async function loadMessages(groupId) {
+            try {
+                const response = await fetch(`/api/get_messages/${groupId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const messagesArea = document.getElementById('messagesArea');
+                    
+                    if (data.messages.length === 0) {
+                        messagesArea.innerHTML = '<div class="empty-state"><p>No messages yet. Be the first to message!</p></div>';
+                        return;
+                    }
+
+                    messagesArea.innerHTML = data.messages.map((msg, index) => {
+                        const isOwn = msg.sender_id === data.current_user_id;
+                        const messageClass = isOwn ? 'message-own' : 'message-other';
+                        
+                        // Format timestamp
+                        const date = new Date(msg.timestamp);
+                        const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        
+                        // Show sender name if not own message (or if there are different senders)
+                        const showSender = !isOwn || (index > 0 && data.messages[index - 1].sender_id !== msg.sender_id);
+
+                        return `
+                            <div class="message-group">
+                                ${showSender ? `<div class="message-sender">${escapeHtml(msg.sender_name)}</div>` : ''}
+                                <div class="message-content ${messageClass}">
+                                    <div class="message-bubble">${escapeHtml(msg.message_text)}</div>
+                                </div>
+                                <div class="message-time">${time}</div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Scroll to bottom
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+
+                    // Update current user info
+                    currentUser = {
+                        id: data.current_user_id,
+                        type: data.current_user_type
+                    };
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        // Load members for a group
+        async function loadMembers(groupId) {
+            try {
+                const response = await fetch(`/api/get_messages/${groupId}`);
+                const data = await response.json();
+
+                if (data.success && data.members) {
+                    document.getElementById('chatMembers').textContent = `${data.members.length} member${data.members.length !== 1 ? 's' : ''}`;
+                    
+                    document.getElementById('membersList').innerHTML = data.members.map(member => `
+                        <div class="member-item">
+                            <div class="member-name">${escapeHtml(member.name)}</div>
+                            <div class="member-type">${member.user_type}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading members:', error);
+            }
+        }
+
+        // Send message
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            const groupId = document.querySelector('.group-item.active')?.getAttribute('data-group-id');
+
+            if (!message) {
+                alert('Please type a message');
+                return;
+            }
+
+            if (!groupId) {
+                alert('Please select a group first');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/send_message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        group_id: groupId,
+                        message_text: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'Success') {
+                    messageInput.value = '';
+                    await loadMessages(groupId);
+                    showSuccess('Message sent!');
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Error sending message');
+            }
+        }
+
+        // Handle Enter key in message input
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Filter groups by search
+        function filterGroups() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            document.querySelectorAll('.group-item').forEach(item => {
+                const groupName = item.querySelector('.group-name').textContent.toLowerCase();
+                item.style.display = groupName.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Modal functions
+        function openMembersModal() {
+            document.getElementById('membersModal').classList.add('active');
+        }
+
+        function closeMembersModal() {
+            document.getElementById('membersModal').classList.remove('active');
+        }
+
+        function openNewGroupModal() {
+            document.getElementById('newGroupModal').classList.add('active');
+        }
+
+        function closeNewGroupModal() {
+            document.getElementById('newGroupModal').classList.remove('active');
+            document.getElementById('newGroupName').value = '';
+            document.getElementById('newGroupDescription').value = '';
+        }
+
+        // Create new group
+        async function createNewGroup() {
+            const name = document.getElementById('newGroupName').value.trim();
+            const description = document.getElementById('newGroupDescription').value.trim();
+
+            if (!name) {
+                alert('Please enter a group name');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/create_group', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        group_name: name,
+                        description: description
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'Success') {
+                    closeNewGroupModal();
+                    loadGroups();
+                    showSuccess(`Group '${name}' created!`);
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error creating group:', error);
+                alert('Error creating group');
+            }
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modals on outside click
+        window.addEventListener('click', function(event) {
+            const membersModal = document.getElementById('membersModal');
+            const newGroupModal = document.getElementById('newGroupModal');
+            
+            if (event.target === membersModal) {
+                closeMembersModal();
+            }
+            if (event.target === newGroupModal) {
+                closeNewGroupModal();
+            }
+        });
+
+        // Reload groups every 5 seconds
+        setInterval(loadGroups, 5000);
+    </script>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Â© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+        <p>Developed by Sourabh Patil | All Rights Reserved</p>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Attendance System</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #15803d, #166534);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            margin: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        body.admin-login .login-container {
+            background: linear-gradient(135deg, rgba(22, 101, 52, 0.95), rgba(20, 83, 45, 0.95));
+        }
+
+        body.admin-login button {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        body.admin-login button:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5), rgba(30, 41, 59, 0.5));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body class="admin-login">
+
+<div class="login-wrapper">
+    <div class="login-header" data-aos="fade-down">
+        <h1>🛡️ Admin Panel</h1>
+        <p>System Administration & Management</p>
+    </div>
+
+    <div class="login-container" data-aos="zoom-in">
+
+        <h2>🔐 Admin Login</h2>
+
+        <form method="POST" action="/admin_login">
+
+            <div class="input-group">
+                <label>Admin ID</label>
+                <input type="text" name="admin_id" placeholder="Enter your Admin ID" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter your Password" required>
+            </div>
+
+            <button type="submit">🔓 Admin Login</button>
+
+        </form>
+
+        <div class="extra-links">
+            <a href="/">⬅ Back to Home</a>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out'
+    });
+</script>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>© 2026 WorkHub AI - AI-Powered Enterprise Management Platform</p>
+    <p>Developed by Sourabh Patil | All Rights Reserved</p>
+</div>
+
+</body>
+</html>
