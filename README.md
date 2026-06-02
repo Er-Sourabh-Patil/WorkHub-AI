@@ -147,44 +147,44 @@ The project consists of the following major modules:
 
 WorkHub-AI/
 
-├── app.py
-├── config.py
-├── database.py
-├── models.py
-├── init_db.py
+├── app.py  
+├── config.py  
+├── database.py  
+├── models.py  
+├── init_db.py  
 
-├── camera_api.py
-├── face_utils.py
+├── camera_api.py  
+├── face_utils.py  
 
-├── chatbot_ai.py
+├── chatbot_ai.py  
 
-├── sms_service.py
+├── sms_service.py  
 
-├── static/
-│   ├── css/
-│   └── js/
+├── static/  
+│   ├── css/  
+│   └── js/  
 
-├── templates/
-│   ├── admin_dashboard.html
-│   ├── employee_dashboard.html
-│   ├── live_attendance.html
-│   ├── payroll.html
-│   ├── project_reports.html
-│   ├── leave_management.html
-│   └── ...
+├── templates/  
+│   ├── admin_dashboard.html  
+│   ├── employee_dashboard.html  
+│   ├── live_attendance.html  
+│   ├── payroll.html  
+│   ├── project_reports.html  
+│   ├── leave_management.html  
+│   └── ...  
 
-├── Structure/
-│   ├── DFD Diagrams
-│   ├── ER Diagrams
-│   ├── System Architecture
-│   ├── Activity Diagram
-│   └── Use Case Diagram
+├── Structure/  
+│   ├── DFD Diagrams  
+│   ├── ER Diagrams  
+│   ├── System Architecture  
+│   ├── Activity Diagram  
+│   └── Use Case Diagram  
 
-├── requirements.txt
+├── requirements.txt  
 
-├── README.md
+├── README.md  
 
-└── Documentation Files
+└── Documentation Files  
 
 ---
 
